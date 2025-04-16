@@ -20,9 +20,7 @@ class AuthSocialiteController  extends Controller
         try {
             $SocialUser = Socialite::driver($provider)->user();
             if (!$SocialUser->getEmail()) {
-                return response()->json([
-                    ['error' => 'No email found from' . $provider], 400
-                ]);
+                return redirect(env('FRONTEND_URL') . '/entrer/join-us?error=NotFound');
             }
 
             $user = User::where('email', $SocialUser->getEmail())

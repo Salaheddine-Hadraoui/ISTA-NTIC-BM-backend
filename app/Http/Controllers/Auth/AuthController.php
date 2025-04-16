@@ -24,4 +24,20 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+    public function register(){
+        
+    }
+    public function logout(){
+        if (Auth::check()) {
+            Auth::logout();
+    
+            return response()->json([
+                'message' => 'Déconnexion réussie.',
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Aucun utilisateur connecté.',
+        ], 401);
+    }
 }
