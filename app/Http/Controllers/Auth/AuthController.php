@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,20 +26,49 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
-    public function register(){
+    public function Register(RegisterRequest $request){
+        $data = $request->validated();
+
+        if($data){
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+            ]);
+            $user = $user->fresh();
+            Auth::login($user);
         
+            return response()->json([
+                'message' => 'Inscription réussie.',
+                'user' => $user,
+            ]);
+        };
+        return response()->json([
+            'message' => 'Inscription réussie.',
+        ],401);
     }
-    public function logout(){
-        if (Auth::check()) {
-            Auth::logout();
+    public function logout(Request $request){
+        try{
+            if (Auth::check()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                
+        
+                return response()->json([
+                    'message' => 'Déconnexion réussie.',
+                    'user' => Auth::user()
+                ], 200);
+            }
     
             return response()->json([
-                'message' => 'Déconnexion réussie.',
-            ], 200);
+                'message' => 'Aucun utilisateur connecté.',
+            ], 401);
         }
-
-        return response()->json([
-            'message' => 'Aucun utilisateur connecté.',
-        ], 401);
+        catch(Exception $e){
+            return response()->json([
+                'message' => 'error'
+            ], );
+        }
     }
 }
