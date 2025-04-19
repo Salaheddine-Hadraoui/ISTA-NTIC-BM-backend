@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -35,16 +34,19 @@ class AuthSocialiteController  extends Controller
                         'client_avatar' => $SocialUser->getAvatar(),
                         'role' => 'user'
                     ]);
-            } else {
-                $user->update([
-                    'client_provider' => $provider,
-                    'client_id' => $SocialUser->getId(),
-                    'client_avatar' => $SocialUser->getAvatar(),
-                ]);
-            }
-            $user = $user->fresh();
-            Auth::login($user, true);
-            return redirect(env('FRONTEND_URL') . '/entrer/join-us?log-in=true');
+                } else {
+                    $user->update([
+                        'client_provider' => $provider,
+                        'client_id' => $SocialUser->getId(),
+                        'client_avatar' => $SocialUser->getAvatar(),
+                    ]);
+                    
+                }
+                $user->refresh();
+                $token = $user->createToken('auth_token')->plainTextToken;
+            
+           
+            return redirect(env('FRONTEND_URL') . '/entrer/join-us?token='.$token);
         } catch (Exception $e) {
             return redirect(env('FRONTEND_URL') . '/entrer/join-us?log-in=failed');
          }

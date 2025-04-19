@@ -6,69 +6,59 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function Login(LoginRequest $request){
-        $data = $request->validated();
-        
-        if(!Auth::attempt($data)){
+    // 🔐 Login
+    public function login(LoginRequest $request)
+    {
+        $user = $request->validated();
+        if (!Auth::attempt($user)) {
             return response()->json([
-               'message' => 'Email ou mot de passe invalide.'
+                'message' => 'Email ou mot de passe invalide.'
             ], 401);
         }
         $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
-            'message' => 'Connexion réussie.',
-            'user' => $user,
+            'message' => 'Connexion réussie. good',
+            'user'    => $user,
+            'role' => $user->role,
+            'token'   => $token,
         ]);
     }
-    public function Register(RegisterRequest $request){
+
+    // 📝 Register
+    public function register(RegisterRequest $request)
+    {
         $data = $request->validated();
 
-        if($data){
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-            ]);
-            $user = $user->fresh();
-            Auth::login($user);
-        
-            return response()->json([
-                'message' => 'Inscription réussie.',
-                'user' => $user,
-            ]);
-        };
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+        $user=$user->fresh();
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'message' => 'Inscription réussie.',
-        ],401);
+            'user'    => $user,
+            'token'   => $token,
+        ], 201);
     }
-    public function logout(Request $request){
-        try{
-            if (Auth::check()) {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-                
-        
-                return response()->json([
-                    'message' => 'Déconnexion réussie.',
-                    'user' => Auth::user()
-                ], 200);
-            }
+
     
-            return response()->json([
-                'message' => 'Aucun utilisateur connecté.',
-            ], 401);
-        }
-        catch(Exception $e){
-            return response()->json([
-                'message' => 'error'
-            ], );
-        }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Déconnexion réussie.'
+        ]);
     }
 }
+
