@@ -16,7 +16,7 @@ return [
     */
 
    'supports_credentials' => true,
-    'allowed_origins' => ['*'],  // You can specify your front-end domain here, e.g., 'http://localhost:3000'
+    'allowed_origins' => [env('FRONTEND_URL')],  // You can specify your front-end domain here, e.g., 'http://localhost:3000'
     'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
     'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     'exposed_headers' => [],
