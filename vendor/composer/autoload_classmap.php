@@ -17,6 +17,7 @@ return array(
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\EventsController' => $baseDir . '/app/Http/Controllers/EventsController.php',
     'App\\Http\\Middleware\\EnsureEmailIsVerified' => $baseDir . '/app/Http/Middleware/EnsureEmailIsVerified.php',
+    'App\\Http\\Middleware\\IsAdmin' => $baseDir . '/app/Http/Middleware/IsAdmin.php',
     'App\\Http\\Requests\\Auth\\LoginRequest' => $baseDir . '/app/Http/Requests/Auth/LoginRequest.php',
     'App\\Http\\Requests\\RegisterRequest' => $baseDir . '/app/Http/Requests/RegisterRequest.php',
     'App\\Models\\Event' => $baseDir . '/app/Models/Event.php',

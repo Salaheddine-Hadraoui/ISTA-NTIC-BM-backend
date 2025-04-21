@@ -17,7 +17,7 @@ class AuthController extends Controller
         $user = $request->validated();
         if (!Auth::attempt($user)) {
             return response()->json([
-                'message' => 'Email ou mot de passe invalide.'
+                'message' => "email n'a pas été trouvé, inscrivez-vous"
             ], 401);
         }
         $user = Auth::user();

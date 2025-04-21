@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
                 'location' => 'Main Hall',
                 'description' => 'Welcome session for new students and orientation presentation.',
                 'image' => 'orientation.jpg',
+                'details' => 'This event provides new students with an overview of the institution, including campus resources and student support services.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\DB;
                 'location' => 'Auditorium',
                 'description' => 'Meet recruiters from top companies and explore job opportunities.',
                 'image' => 'career_fair.jpg',
+                'details' => 'Students can interact with top employers and learn about various career paths, internships, and job openings.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -40,6 +42,7 @@ use Illuminate\Support\Facades\DB;
                 'location' => 'Tech Lab 3',
                 'description' => '48-hour coding competition with exciting prizes.',
                 'image' => 'hackathon.png',
+                'details' => 'Participants will have 48 hours to create innovative projects, collaborate with teammates, and present their solutions.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -50,6 +53,7 @@ use Illuminate\Support\Facades\DB;
                 'location' => 'Outdoor Stage',
                 'description' => 'Celebrate the diverse cultures of our students with food, music, and art.',
                 'image' => 'cultural_day.jpg',
+                'details' => 'A day to showcase student cultures through performances, food stalls, art exhibitions, and more.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -60,9 +64,11 @@ use Illuminate\Support\Facades\DB;
                 'location' => 'Classrooms',
                 'description' => 'Start of final exams for all departments. Check your schedule.',
                 'image' => null,
+                'details' => 'The exam period will begin for all students. Be sure to check your exam schedule and room assignments.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
+        
     }
 }

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use Exception;
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -14,7 +15,10 @@ class EventsController extends Controller
      */
     public function index()
     {
-        $events = Event::all();
+        $events = Event::all()->map(function ($event) {
+            $event->date = Carbon::parse($event->date)->translatedFormat('l d F Y');
+            return $event;
+        });
         return response()->json([
             'events' => $events
         ],200);
@@ -53,6 +57,7 @@ class EventsController extends Controller
              'time' =>      'required|date_format:H:i',  
                 'location' => 'required|string|max:255',  
                'description' => 'nullable|string|max:1000',  
+               'details' => 'nullable|string|max:1000',  
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:1048',  
     
         ]);
@@ -67,10 +72,16 @@ class EventsController extends Controller
 
             $path =  $request->file('image')->store('Events','public');
                     // n7too l path dial image f image column f events table
-            $data['image'] =  $path;
+            $data['image'] = $path;
         };
 
         $event = Event::create($data);
+
+        $event->refresh();
+
+        $event->date = Carbon::parse($event->date)->translatedFormat('l d F Y');
+
+        $event->time = Carbon::parse($event->time)->translatedFormat('H:i');
         return response()->json([
             'success' => true,
             'event' => $event
@@ -82,9 +93,18 @@ class EventsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Event $eventName)
     {
-        //
+        $event = Event::find($eventName->id);
+
+        $event->date = Carbon::parse($event->date)->translatedFormat('l d F Y');
+
+        $event->time = Carbon::parse($event->time)->translatedFormat('H:i');     
+           return response()->json([
+            'success' => true,
+            'event' => $event
+        ] ,201
+        );
     }
 
     /**

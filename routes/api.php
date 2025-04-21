@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EventsController;
+use App\Models\Filiers;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum',IsAdmin::class])->group(
     function(){
         Route::post('adminOnly/addnewEvent',[EventsController::class,'store']);
+        Route::delete('adminOnly/deleteEvent',[EventsController::class,'destroy']);
     }
 );
 
@@ -47,5 +49,16 @@ Route::middleware(['auth:sanctum',IsAdmin::class])->group(
 
 //---Event route-------------------------
 Route::get('getevents',[EventsController::class,'index']);
+
 Route::get('getevents/latest',[EventsController::class,'index_latest']);
+
+Route::get('getevents/{eventName}',[EventsController::class,'show']);
+//--------------------------------------------------------------------------------------
+
+Route::get('getFilieres ',function(){
+    $filiers = Filiers::all();
+    return response()->json(
+        ['filiers'=>$filiers]
+    );
+});
 

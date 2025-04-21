@@ -635,6 +635,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\EventsController' => __DIR__ . '/../..' . '/app/Http/Controllers/EventsController.php',
         'App\\Http\\Middleware\\EnsureEmailIsVerified' => __DIR__ . '/../..' . '/app/Http/Middleware/EnsureEmailIsVerified.php',
+        'App\\Http\\Middleware\\IsAdmin' => __DIR__ . '/../..' . '/app/Http/Middleware/IsAdmin.php',
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\RegisterRequest' => __DIR__ . '/../..' . '/app/Http/Requests/RegisterRequest.php',
         'App\\Models\\Event' => __DIR__ . '/../..' . '/app/Models/Event.php',

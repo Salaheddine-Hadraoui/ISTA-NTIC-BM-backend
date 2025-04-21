@@ -19,6 +19,7 @@ class Event extends Model
         'time',
         'location',
         'description',
-      ' image'
+        'details',
+        'image'
     ];
 }
