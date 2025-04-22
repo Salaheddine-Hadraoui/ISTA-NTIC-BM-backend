@@ -37,7 +37,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum',IsAdmin::class])->group(
     function(){
         Route::post('adminOnly/addnewEvent',[EventsController::class,'store']);
-        Route::delete('adminOnly/deleteEvent',[EventsController::class,'destroy']);
+
+        Route::delete('adminOnly/deleteEvent/{event}',[EventsController::class,'destroy']);
     }
 );
 
