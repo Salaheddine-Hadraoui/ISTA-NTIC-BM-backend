@@ -16,7 +16,7 @@ class EventsController extends Controller
     public function index()
     {
         $events = Event::all()->map(function ($event) {
-            $event->date = Carbon::parse($event->date)->translatedFormat('l d F Y');
+            $event['formated_date'] = Carbon::parse($event->date)->translatedFormat('l d F Y');
             return $event;
         });
         return response()->json([
@@ -61,7 +61,7 @@ class EventsController extends Controller
                 'location' => 'required|string|max:255',
                 'description' => 'nullable|string|max:1000',
                 'details' => 'nullable|string|max:1000',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:1048',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
 
             ]);
         } catch (ValidationException $eror) {
@@ -81,7 +81,7 @@ class EventsController extends Controller
 
         $event->refresh();
 
-        $event->date = Carbon::parse($event->date)->translatedFormat('l d F Y');
+        $event['formated_date'] = Carbon::parse($event->date)->translatedFormat('l d F Y');
 
         $event->time = Carbon::parse($event->time)->translatedFormat('H:i');
         return response()->json(
@@ -100,7 +100,7 @@ class EventsController extends Controller
     {
         $event = Event::find($eventName->id);
 
-        $event->date = Carbon::parse($event->date)->translatedFormat('l d F Y');
+        $event['formated_date'] = Carbon::parse($event->date)->translatedFormat('l d F Y');
 
         $event->time = Carbon::parse($event->time)->translatedFormat('H:i');
         return response()->json(

@@ -18,6 +18,14 @@ Route::post('/register', [AuthController::class, 'Register']);
 //----------------------------------------------------------------------------------------------------------------------
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/restoreME',function(Request $request){
+            $user = $request->user();
+            return response()->json([
+                'message' => 'Connexion réussie.',
+                'user'    => $user,
+                'role' => $user->role,
+            ],200);
+    });
     Route::get('/user', function (Request $request) {
         $user = $request->user();
         $token = PersonalAccessToken::where('tokenable_id',$user->id)

@@ -34,10 +34,6 @@ class DatabaseSeeder extends Seeder
                 [
                     'name' => 'Infrastructure Digitale option Systèmes et Réseaux',
                     'description' => 'Approfondissement des compétences en administration systèmes et gestion des réseaux.'
-                ],
-                [
-                    'name' => 'Certification Microsoft Office Specialist en Excel',
-                    'description' => 'Formation à l\'utilisation avancée d\'Excel avec certification officielle Microsoft.'
                 ]
             ]);
     }
