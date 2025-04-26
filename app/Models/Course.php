@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Sanctum\HasApiTokens;
+use App\Models\Module;
 
 class Course extends Model
 {
-    use HasApiTokens;
-    protected $fillable=[
-        'title',
-        'description',
-        'file_path'
-    ];
+    protected $fillable =['name','course_pdf','module_id'];
+    public function module(){
+        return $this->belongsTo(related: Module::class);
+    }
 }

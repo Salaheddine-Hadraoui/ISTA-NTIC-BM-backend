@@ -6,6 +6,8 @@ use App\Models\Event;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class EventsController extends Controller
@@ -44,23 +46,15 @@ class EventsController extends Controller
      */
     public function store(Request $request)
     {
-        $user = $request->user();
-        if (!$user && $user->role !== 'admin') {
-            return response()->json(
-                [
-                    'error' => 'Accès refuse. Reserve aux administrateurs.'
-                ],
-                403
-            );
-        };
+
         try {
             $data = $request->validate([
                 'title' => 'required|string|max:255',
                 'date' => 'required|date',
                 'time' =>      'required|date_format:H:i',
                 'location' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000',
-                'details' => 'nullable|string|max:1000',
+                'description' => 'required|string|max:4000',
+                'details' => 'required|string|max:4000',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
 
             ]);
@@ -68,7 +62,7 @@ class EventsController extends Controller
             return response()->json([
                 'success' => false,
                 'errors' => $eror->errors()
-            ], 200);
+            ], status: 200);
         }
         if ($request->hasFile('image')) {
 
@@ -99,6 +93,12 @@ class EventsController extends Controller
     public function show(Event $eventName)
     {
         $event = Event::find($eventName->id);
+        if (!$event) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Événement introuvable.'
+            ], 404);
+        }
 
         $event['formated_date'] = Carbon::parse($event->date)->translatedFormat('l d F Y');
 
@@ -125,30 +125,77 @@ class EventsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $event = Event::find($id);
+
+        if (!$event) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Événement introuvable.'
+            ], 404);
+        }
+
+        try {
+            $data = $request->validate([
+                'title' => 'required|string|max:255',
+                'date' => 'required|date',
+                'time' => 'required|date_format:H:i',
+                'location' => 'required|string|max:255',
+                'description' => 'nullable|string|max:1000',
+                'details' => 'nullable|string|max:1000',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
+            ]);
+        } catch (ValidationException $error) {
+            return response()->json([
+
+                'request' => $request->all(),
+                'success' => false,
+                'errors' => $error->errors()
+            ], 422);
+        }
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            if($event->image){
+                Storage::disk('public')->delete($event->image);
+            }
+            $path = $request->file('image')->store('Events', 'public');
+            $data['image'] = $path;
+        } else {
+            $data['image'] = $event->image; // keep existing image
+        }
+
+        $event->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Événement mis à jour avec succès.',
+            'event' => $event
+        ], 200);
     }
 
+    
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        
+
         $event = Event::find($id);
 
-    if (!$event) {
+        if (!$event) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Événement introuvable.'
+            ], 404);
+        }
+
+        $event->delete();
+
         return response()->json([
-            'success' => false,
-            'message' => 'Événement introuvable.'
-        ], 404);
-    }
-
-    $event->delete();
-
-    return response()->json([
-        'success' => true,
-        'event' => $event,
-        'message' => 'Événement supprimé avec succès.'
-    ], 200);
+            'success' => true,
+            'event' => $event,
+            'message' => 'Événement supprimé avec succès.'
+        ], 200);
     }
 }
