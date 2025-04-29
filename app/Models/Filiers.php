@@ -10,4 +10,7 @@ class Filiers extends Model
         'name',
         'description'
     ];
+    public function schedule(){
+        return $this->hasOne(Schedule::class);
+    }
 }

@@ -27,7 +27,7 @@ class EventsController extends Controller
     }
     public function index_latest()
     {
-        $events = Event::all()->where('');
+        $events = Event::all()->where('date','=',now());
         return response()->json([
             'latestevents' => $events
         ], 200);

@@ -22,5 +22,6 @@ return [
     'exposed_headers' => [],
     'max_age' => 0,
     'hosts' => [],
+    'paths' => ['api/*','course-pdf/*'],  
 
 ];

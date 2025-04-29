@@ -46,9 +46,9 @@ class AuthSocialiteController  extends Controller
                 $token = $user->createToken('auth_token')->plainTextToken;
             
            
-            return redirect(env('FRONTEND_URL') . '/entrer/join-us?token='.$token);
+            return redirect(config('app.frontend_url') . '/entrer/join-us?token='.$token);
         } catch (Exception $e) {
-            return redirect(env('FRONTEND_URL') . '/entrer/join-us?log-in=failed');
+            return redirect(config('app.frontend_url')  . '/entrer/join-us?log-in=failed');
          }
     }
    

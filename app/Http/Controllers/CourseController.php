@@ -24,6 +24,8 @@ class CourseController extends Controller
             'courses' => $courses
         ], 200);
     }
+
+
     public function store(Request $request)
     {
         try {
@@ -44,7 +46,8 @@ class CourseController extends Controller
             $data['course_pdf'] = $path;
         }
         $course = Course::create($data);
-        $course->refresh();
+        //jib l module li relationnell m3a had cours jdjd
+        $course->load('module');
 
         return response()->json([
             'course' => $course,
@@ -53,51 +56,10 @@ class CourseController extends Controller
     }
 
 
-    public function update(Request $request, $id)
-    {
-        try {
-            $data = $request->validate([
-                'name' => 'required|string|min:8',
-                'course_pdf' => 'nullable|file|mimes:pdf|max:10240',
-                'module_id' => 'required|exists:modules,id'
-            ]);
-        } catch (ValidationException $err) {
-            return response()->json([
-                'errors' => $err->errors(),
-                'success' => false
-            ], 200);
-        }
-
-        $course = Course::find($id);
-
-        if (!$course) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Course not found.'
-            ], 404);
-        }
+   
 
     
-        if ($request->hasFile('course_pdf')) {
-           
-            if ($course->course_pdf) {
-              
-                Storage::disk('public')->delete($course->course_pdf);
-            }
-
-          
-            $path = $request->file('course_pdf')->store('Courses', 'public');
-            $data['course_pdf'] = $path;
-        }
-
        
-        $course->update($data);
-
-        return response()->json([
-            'course' => $course,
-            'success' => true
-        ], 200);
-    }
 
 
     public function destroy($id)
@@ -111,7 +73,9 @@ class CourseController extends Controller
                 'message' => 'Cours introuvable.'
             ], 404);
         }
-
+        if (Storage::disk('public')->exists($cours->course_pdf)) {
+            Storage::disk('public')->delete($cours->course_pdf);
+        }
         $cours->delete();
 
         return response()->json([
